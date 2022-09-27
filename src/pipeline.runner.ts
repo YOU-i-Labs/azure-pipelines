@@ -49,6 +49,8 @@ export class PipelineRunner {
     }
 
     public async RunYamlPipeline(webApi: azdev.WebApi): Promise<any> {
+        core.info(`Yaml Pipeline parameters: ${JSON.stringify(this.taskParameters)}`);
+
         let projectName = UrlParser.GetProjectName(this.taskParameters.azureDevopsProjectUrl);
         let pipelineName = this.taskParameters.azurePipelineName;
         let buildDefinitionId = this.taskParameters.azurePipelineId ? parseInt(this.taskParameters.azurePipelineId, 10) : 0;
@@ -110,7 +112,7 @@ export class PipelineRunner {
             sourceBranch: sourceBranch,
             sourceVersion: sourceVersion,
             reason: BuildInterfaces.BuildReason.Triggered,
-            parameters: this.taskParameters.azurePipelineVariables
+            templateParameters: JSON.parse(this.taskParameters.azurePipelineVariables)
         } as BuildInterfaces.Build;
 
         log.LogPipelineTriggerInput(build);
@@ -125,7 +127,7 @@ export class PipelineRunner {
                 core.setFailed("Errors: " + errorAndWarningMessage.errorMessage + " Warnings: " + errorAndWarningMessage.warningMessage);
             }
             else {
-                log.LogPipelineTriggered(pipelineName, projectName);
+                log.LogPipelineTriggered(buildDefinition.name, projectName);
                 if (buildQueueResult._links != null) {
                     log.LogOutputUrl(buildQueueResult._links.web.href);
                 }
