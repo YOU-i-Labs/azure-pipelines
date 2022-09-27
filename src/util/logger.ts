@@ -18,11 +18,11 @@ export class Logger {
     }
 
     public static LogPipelineObject(object: any) {
-        core.debug("Pipeline object : " + this.getPrintObject(object));
+        core.info("Pipeline object : " + this.getPrintObject(object));
     }
 
     public static LogPipelineTriggerInput(input: any) {
-        core.debug("Input: " + this.getPrintObject(input));
+        core.info("Input: " + this.getPrintObject(input));
     }
 
     public static LogPipelineTriggerOutput(output: any) {

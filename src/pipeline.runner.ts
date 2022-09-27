@@ -49,6 +49,9 @@ export class PipelineRunner {
     }
 
     public async RunYamlPipeline(webApi: azdev.WebApi): Promise<any> {
+        core.info(`Yaml Pipeline parameters: ${this.taskParameters}`);
+        core.info(`Yaml Pipeline parameters json: ${JSON.stringify(this.taskParameters)}`);
+
         let projectName = UrlParser.GetProjectName(this.taskParameters.azureDevopsProjectUrl);
         let pipelineName = this.taskParameters.azurePipelineName;
         let buildDefinitionId = this.taskParameters.azurePipelineId ? parseInt(this.taskParameters.azurePipelineId, 10) : 0;
