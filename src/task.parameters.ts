@@ -4,7 +4,7 @@ export class TaskParameters {
     private static taskparams: TaskParameters;
     private _azureDevopsProjectUrl: string;
     private _azurePipelineName: string;
-    private _azurePipelineId: string;
+    private _azurePipelineId;
     private _azureDevopsToken: string;
     private _azurePipelineVariables: string;
     private _ref: string;

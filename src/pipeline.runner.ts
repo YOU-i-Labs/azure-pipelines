@@ -29,31 +29,33 @@ export class PipelineRunner {
             let webApi = new azdev.WebApi(collectionUrl, authHandler);
             core.info("Connection created");
 
-            let description = `(name="${this.taskParameters.azurePipelineName}", id=${this.taskParameters.azurePipelineId})`;
-            try {
-                core.debug(`Triggering Yaml pipeline : ${description}`);
-                await this.RunYamlPipeline(webApi);
-            }
-            catch (error) {
-                if (error instanceof PipelineNotFoundError) {
-                    core.debug(`Triggering Designer pipeline : ${description}`);
-                    await this.RunDesignerPipeline(webApi);
-                } else {
-                    throw error;
+            this.taskParameters.azurePipelineId.forEach(async element => {
+                let description = `(name="${this.taskParameters.azurePipelineName}", id=${element})`;
+                try {
+                    core.debug(`Triggering Yaml pipeline : ${description}`);
+                    await this.RunYamlPipeline(webApi, element);
                 }
-            }
+                catch (error) {
+                    if (error instanceof PipelineNotFoundError) {
+                        core.debug(`Triggering Designer pipeline : ${description}`);
+                        await this.RunDesignerPipeline(webApi);
+                    } else {
+                        throw error;
+                    }
+                }     
+            });
         } catch (error) {
             let errorMessage: string = `${error.message}`;
             core.setFailed(errorMessage);
         }
     }
 
-    public async RunYamlPipeline(webApi: azdev.WebApi): Promise<any> {
+    public async RunYamlPipeline(webApi: azdev.WebApi, azurePipelineId: any): Promise<any> {
         core.info(`Yaml Pipeline parameters: ${JSON.stringify(this.taskParameters)}`);
 
         let projectName = UrlParser.GetProjectName(this.taskParameters.azureDevopsProjectUrl);
         let pipelineName = this.taskParameters.azurePipelineName;
-        let buildDefinitionId = this.taskParameters.azurePipelineId ? parseInt(this.taskParameters.azurePipelineId, 10) : 0;
+        let buildDefinitionId = azurePipelineId ? azurePipelineId : 0;
         let buildApi = await webApi.getBuildApi();
 
         // If the user passed a name instead of a definition id, search existing
