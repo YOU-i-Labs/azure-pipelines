@@ -31,12 +31,12 @@ export class PipelineRunner {
 
             let description = `(name="${this.taskParameters.azurePipelineName}", id=${this.taskParameters.azurePipelineId})`;
             try {
-                core.debug(`Triggering Yaml pipeline : ${description}`);
+                core.info(`Triggering Yaml pipeline : ${description}`);
                 await this.RunYamlPipeline(webApi);
             }
             catch (error) {
                 if (error instanceof PipelineNotFoundError) {
-                    core.debug(`Triggering Designer pipeline : ${description}`);
+                    core.info(`Triggering Designer pipeline : ${description}`);
                     await this.RunDesignerPipeline(webApi);
                 } else {
                     throw error;
@@ -83,11 +83,11 @@ export class PipelineRunner {
 
         // If definition is linked to existing github repo, pass github source branch and source version to build
         if (p.equals(repositoryId, this.repository) && p.equals(repositoryType, this.githubRepo)) {
-            core.debug("pipeline is linked to same Github repo");
+            core.info("pipeline is linked to same Github repo");
             sourceBranch = this.branch,
             sourceVersion = this.commitId
         } else {
-            core.debug("pipeline is not linked to same Github repo");
+            core.info("pipeline is not linked to same Github repo");
         }
 
         // If provided, the user-specified ref and sha override our implied branch
@@ -95,11 +95,11 @@ export class PipelineRunner {
         // in workflows triggered by non-PR events (like issue_comment).
         if (this.taskParameters.ref) {
             sourceBranch = this.taskParameters.ref;
-            core.debug(`using user-specified ref ${sourceBranch}`);
+            core.info(`using user-specified ref ${sourceBranch}`);
         }
         if (this.taskParameters.sha) {
             sourceVersion = this.taskParameters.sha;
-            core.debug(`using user-specified sha ${sourceVersion}`);
+            core.info(`using user-specified sha ${sourceVersion}`);
         }
 
         let build: BuildInterfaces.Build = {
@@ -163,11 +163,11 @@ export class PipelineRunner {
         let artifacts: ReleaseInterfaces.ArtifactMetadata[] = new Array();
 
         if (gitHubArtifacts == null || gitHubArtifacts.length == 0) {
-            core.debug("Pipeline is not linked to any GitHub artifact");
+            core.info("Pipeline is not linked to any GitHub artifact");
             // If no GitHub artifacts found it means pipeline is not linked to any GitHub artifact
         } else {
             // If pipeline has any matching Github artifact
-            core.debug("Pipeline is linked to GitHub artifact. Looking for now matching repository");
+            core.info("Pipeline is linked to GitHub artifact. Looking for now matching repository");
             gitHubArtifacts.forEach(gitHubArtifact => {
                 if (gitHubArtifact.definitionReference != null && p.equals(gitHubArtifact.definitionReference.definition.name, this.repository)) {
                     // Add version information for matching GitHub artifact
@@ -181,7 +181,7 @@ export class PipelineRunner {
                             sourceVersion: this.commitId
                         }
                     }
-                    core.debug("pipeline is linked to same Github repo");
+                    core.info("pipeline is linked to same Github repo");
                     artifacts.push(artifactMetadata);
                 }
             });
