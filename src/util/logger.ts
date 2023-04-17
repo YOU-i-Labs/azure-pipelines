@@ -26,7 +26,7 @@ export class Logger {
     }
 
     public static LogPipelineTriggerOutput(output: any) {
-        core.debug("Output: " + this.getPrintObject(output));
+        core.info("Output: " + this.getPrintObject(output));
     }
 
     public static getPrintObject(object: any): string {
