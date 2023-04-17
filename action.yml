@@ -23,5 +23,5 @@ inputs:
     description: 'Specify to override the default sha ($GITHUB_SHA)'
     required: false
 runs:
-  using: 'node14'
+  using: 'node16'
   main: 'lib/main.js'

@@ -119,6 +119,7 @@ export class PipelineRunner {
 
         // Queue build
         let buildQueueResult = await buildApi.queueBuild(build, build.project.id, true);
+        core.info("Output: " + JSON.stringify(buildQueueResult, null, 4));
         if (buildQueueResult != null) {
             log.LogPipelineTriggerOutput(buildQueueResult);
             // If build result contains validation errors set result to FAILED
